@@ -11,28 +11,30 @@
 <body>
 <div id="app">
   <div>
-    <div class="meetup-cover">
-      <h1 class="meetup-cover__title">Название митапа</h1>
-    </div>
+    <template v-if="finalMeetup">
+      <div class="meetup-cover" :style="finalMeetup.cover ? `--bg-url: url('${finalMeetup.cover}')` : ''">
+        <h1 class="meetup-cover__title">{{ finalMeetup.title }}</h1>
+      </div>
 
-    <div class="container">
+
+      <div class="container">
       <div class="meetup">
         <div class="meetup__content">
           <h3>Описание</h3>
-          <p class="meetup-description">Описание митапа</p>
+          <p class="meetup-description">{{finalMeetup.description}}</p>
 
           <h3>Программа</h3>
           <div class="meetup-agenda">
-            <p class="meetup-agenda__empty">Программа пока пуста, но когда-нибудь в ней обязательно что-нибудь появится!</p>
-            <div class="meetup-agenda__item">
+
+            <div class="meetup-agenda__item" v-for="agendaItem in finalMeetup.agenda" :key="agendaItem.id">
               <div class="meetup-agenda__item-col">
                 <img class="icon" alt="icon" src="/assets/icons/icon-cal-sm.svg" />
               </div>
-              <div class="meetup-agenda__item-col">00:00 - 00:00</div>
+              <div class="meetup-agenda__item-col">{{agendaItem.startsAt}} - {{agendaItem.endsAt}}</div>
               <div class="meetup-agenda__item-col">
-                <h5 class="meetup-agenda__title">Название доклада</h5>
-                <p><span>Докладчик</span><span class="meetup-agenda__dot"></span><span class="meetup-agenda__lang">RU</span></p>
-                <p>Описание доклада</p>
+                <h5 class="meetup-agenda__title">{{agendaItem.title}}</h5>
+                <p><span>{{agendaItem.speaker}}</span><span class="meetup-agenda__dot"></span><span class="meetup-agenda__lang">RU</span></p>
+                <p>{{agendaItem.description}}</p>
               </div>
             </div>
 
@@ -43,11 +45,11 @@
           <ul class="info-list">
             <li>
               <img class="icon info-list__icon" alt="icon" src="/assets/icons/icon-user.svg" />
-              Организатор
+              {{finalMeetup.organizer}}
             </li>
             <li>
               <img class="icon info-list__icon" alt="icon" src="/assets/icons/icon-map.svg" />
-              Место
+              {{finalMeetup.place}}
             </li>
             <li>
               <img class="icon info-list__icon" alt="icon" src="/assets/icons/icon-cal-lg.svg" />
@@ -57,7 +59,9 @@
         </div>
       </div>
     </div>
+    </template>
   </div>
+
 </div>
 
 <script type="module" src="script.js"></script>

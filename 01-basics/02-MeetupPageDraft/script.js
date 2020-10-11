@@ -49,18 +49,56 @@ export const app = new Vue({
 
   data: {
     //
+    meetups: null
   },
 
   mounted() {
     // Требуется получить данные митапа с API
+    this.getMeetups()
   },
 
   computed: {
     //
+    finalMeetup() {
+      // Требуется помнить о том, что изначально митапа может не быть.
+      // В этом случае и вычисляемый митап - это null.
+      if (this.meetups === null) {
+        return null;
+      }
+
+      return {
+        ...this.meetups,
+
+        cover: this.meetups.imageId
+          ? getMeetupCoverLink(this.meetups)
+          : null,
+
+        date: new Date(this.meetups.date),
+
+        localeDate: new Date(this.meetups.date).toLocaleString(
+          navigator.language,
+          {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          },
+        ),
+
+        agenda: this.meetups.agenda.map((agendaItem) => ({
+          ...agendaItem,
+          icon: `icon-${agendaItemIcons[agendaItem.type]}.svg`,
+          title: agendaItem.title || agendaItemTitles[agendaItem.type],
+        })),
+      };
+    },
   },
 
   methods: {
     // Получение данных с API предпочтительнее оформить отдельным методом,
     // а не писать прямо в mounted()
+    async getMeetups() {
+      this.meetups = await fetch(`${API_URL}/meetups/${MEETUP_ID}`,).then((res) => res.json());
+      console.log(this.meetups)
+    }
   },
 });
